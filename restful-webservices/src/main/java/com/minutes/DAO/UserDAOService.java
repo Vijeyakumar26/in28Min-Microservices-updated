@@ -25,7 +25,7 @@ public class UserDAOService {
 	}
 	
 	public User findUser(int userId){
-		return users.stream().filter(u -> u.getId().equals(userId)).findFirst().get();
+		return users.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
 	}
 	
 	public User saveUser(User user){

@@ -28,7 +28,11 @@ public class UserController {
 	
 	@GetMapping(path = "/users/{userId}")
 	public User retrieveUser(@PathVariable int userId){
-		return service.findUser(userId);
+		User user = service.findUser(userId);
+		if(user==null) {
+			throw new UserNotFoundException("User not found with id: "+ userId);
+		}
+		return user;
 	}
 	
 	@PostMapping(path = "/users")
@@ -39,7 +43,7 @@ public class UserController {
 				.path("/{id}")
 				.buildAndExpand(savedUser.getId())
 				.toUri();
-		
+		 
 		return ResponseEntity.created(location).build();
 	}
 }
