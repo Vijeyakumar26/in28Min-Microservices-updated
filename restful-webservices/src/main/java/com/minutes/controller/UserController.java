@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.minutes.DAO.UserDAOService;
 import com.minutes.beans.User;
+import com.minutes.exception.UserNotFoundException;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
@@ -35,8 +39,13 @@ public class UserController {
 		return user;
 	}
 	
+	@DeleteMapping(path = "/users/{userId}")
+	public void deleteUserById(@PathVariable int userId){
+		service.deleteUser(userId);
+	}
+	
 	@PostMapping(path = "/users")
-	public ResponseEntity<User> saveUser(@RequestBody User user){
+	public ResponseEntity<User> saveUser(@Valid @RequestBody User user){
 		User savedUser = service.saveUser(user);
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()

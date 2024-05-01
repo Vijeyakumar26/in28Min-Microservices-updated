@@ -3,6 +3,7 @@ package com.minutes.DAO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,13 @@ public class UserDAOService {
 	}
 	
 	public User findUser(int userId){
-		return users.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
+		Predicate<User> predicate = user -> user.getId().equals(userId);
+		return users.stream().filter(predicate).findFirst().orElse(null);
+	}
+	
+	public void deleteUser(int userId){
+		Predicate<User> predicate = user -> user.getId().equals(userId);
+		users.removeIf(predicate);
 	}
 	
 	public User saveUser(User user){
