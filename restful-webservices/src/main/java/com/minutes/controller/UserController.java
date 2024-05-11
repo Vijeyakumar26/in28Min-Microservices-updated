@@ -4,6 +4,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +33,27 @@ public class UserController {
 		return service.findAll();
 	}
 	
-	@GetMapping(path = "/users/{userId}")
+/*	@GetMapping(path = "/users/{userId}")
 	public User retrieveUser(@PathVariable int userId){
 		User user = service.findUser(userId);
 		if(user==null) {
 			throw new UserNotFoundException("User not found with id: "+ userId);
 		}
 		return user;
+	} */
+	
+	@GetMapping(path = "/users/{userId}")
+	public EntityModel<User> retrieveUserHateoas(@PathVariable int userId){
+		User user = service.findUser(userId);
+		if(user==null) {
+			throw new UserNotFoundException("User not found with id: "+ userId);
+		}
+		
+		EntityModel<User> entityModel = EntityModel.of(user);
+		WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(methodOn(this.getClass()).retrieveAllUsers());
+		entityModel.add(link.withRel("all-users"));		
+		
+		return entityModel;
 	}
 	
 	@DeleteMapping(path = "/users/{userId}")
